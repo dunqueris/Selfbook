@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase'
+import { getSupabaseClient } from '@/lib/supabase'
 import { Profile, Section } from '@/lib/types'
 import ProfileCard from '@/components/ProfileCard'
 import { notFound } from 'next/navigation'
@@ -10,6 +10,8 @@ interface PageProps {
 }
 
 async function getProfile(username: string) {
+  const supabase = getSupabaseClient()
+  
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')

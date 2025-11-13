@@ -1,4 +1,4 @@
-# ⚡ PERSONIQ QUICK REFERENCE
+# ⚡ SHELFBOOK QUICK REFERENCE
 
 ## 🎯 30-Second Overview
 
@@ -13,7 +13,7 @@ Your 5 Docs:
   5. Public Profile & Section Components.txt             → Public Profile + Components
 
 Organized into:
-  /Personiq-Platform (Professional project structure)
+  /Shelfbook-Platform (Professional project structure)
   ├── Frontend (React/TypeScript)
   ├── Backend (API routes)
   ├── Database (SQL schema)
@@ -331,7 +331,7 @@ A: Supabase free tier + Vercel free tier = **$0**
 
 ## 🎉 YOU'RE ALL SET!
 
-Your Personiq platform is ready to go. It's:
+Your Shelfbook platform is ready to go. It's:
 - ✅ Fully functional
 - ✅ Production-ready
 - ✅ Well-organized by language

@@ -369,7 +369,7 @@ QUICK_REFERENCE.md
 export default function Home() {
   return (
     <div className="container mx-auto">
-      <h1>Welcome to Personiq</h1>
+      <h1>Welcome to Shelfbook</h1>
       <button className="bg-purple-600">Sign Up</button>
     </div>
   )
@@ -397,7 +397,7 @@ CREATE TABLE profiles (
 ### **JSON Example:**
 ```json
 {
-  "name": "personiq-platform",
+  "name": "shelfbook-platform",
   "dependencies": {
     "next": "^14.0.0",
     "react": "^18.2.0"
@@ -414,7 +414,7 @@ CREATE TABLE profiles (
 
 ### **Markdown Example:**
 ```markdown
-# Personiq - Profile Platform MVP
+# Shelfbook - Profile Platform MVP
 A platform for creating beautiful profiles...
 ```
 
@@ -465,7 +465,7 @@ TOTAL                                      24
 
 ## ✅ SUMMARY
 
-Your Personiq platform uses:
+Your Shelfbook platform uses:
 
 - **TypeScript/React** for beautiful, interactive UIs
 - **TypeScript** for safe, maintainable backend code

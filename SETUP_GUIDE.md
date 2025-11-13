@@ -1,4 +1,4 @@
-# 📋 COMPLETE PERSONIQ PLATFORM SETUP GUIDE
+# 📋 COMPLETE SHELFBOOK PLATFORM SETUP GUIDE
 
 ## 🎯 What You're Building
 
@@ -6,7 +6,7 @@ A full-stack profile platform where users can:
 - Sign up with email/password
 - Create a personal profile with username
 - Add different types of content sections (text lists, links, galleries)
-- Share their profile at a unique URL (e.g., personiq.app/@john)
+- Share their profile at a unique URL (e.g., shelfbook.app/@john)
 - Edit and manage their profile from a dashboard
 
 ---
@@ -79,7 +79,7 @@ Styling:
 Navigate to your project directory and run:
 
 ```bash
-cd d:\VSCode Projects\Personiq-Platform
+cd d:\VSCode Projects\Shelfbook-Platform
 npm install
 ```
 
@@ -102,7 +102,7 @@ This installs:
 2. Click "Start your project"
 3. Sign up with GitHub or email
 4. Create a new project
-   - Name: "personiq-platform" (or your choice)
+   - Name: "shelfbook-platform" (or your choice)
    - Region: Choose closest to you
    - Password: Create a secure password
 5. **Wait 2-3 minutes** for database to initialize
@@ -203,7 +203,7 @@ CREATE POLICY "Users can manage own sections"
 
 ### **STEP 3: Create Environment Variables**
 
-1. In your project root (`d:\VSCode Projects\Personiq-Platform`), create `.env.local` file
+1. In your project root (`d:\VSCode Projects\Shelfbook-Platform`), create `.env.local` file
 2. Add:
 
 ```bash
@@ -227,7 +227,7 @@ npm run dev
 
 You should see:
 ```
-> personiq-platform@0.1.0 dev
+> shelfbook-platform@0.1.0 dev
 > next dev
 
   ▲ Next.js 14.0.0
@@ -405,7 +405,7 @@ DELETE - Delete section
    git add .
    git commit -m "Initial commit"
    git branch -M main
-   git remote add origin https://github.com/yourusername/personiq.git
+   git remote add origin https://github.com/yourusername/shelfbook.git
    git push -u origin main
    ```
 

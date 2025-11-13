@@ -15,7 +15,7 @@ I've converted your 5 text documents into a **professional, production-ready Nex
 
 ### Organized Into:
 ```
-Personiq-Platform/
+Shelfbook-Platform/
 ├── Frontend Components (TypeScript/React)
 ├── Backend API (TypeScript)
 ├── Database Schema (SQL)
@@ -29,7 +29,7 @@ Personiq-Platform/
 ## 📦 COMPLETE PROJECT STRUCTURE
 
 ```
-d:\VSCode Projects\Personiq-Platform/
+d:\VSCode Projects\Shelfbook-Platform/
 │
 ├── 📁 app/                          [Main application]
 │   ├── layout.tsx                   Root layout with Navbar
@@ -167,7 +167,7 @@ d:\VSCode Projects\Personiq-Platform/
 ### Quick Start:
 ```bash
 # 1. Navigate to project
-cd d:\VSCode Projects\Personiq-Platform
+cd d:\VSCode Projects\Shelfbook-Platform
 
 # 2. Install dependencies
 npm install
@@ -341,7 +341,7 @@ You now have:
 
 ```bash
 # 1. Go to project folder
-cd d:\VSCode Projects\Personiq-Platform
+cd d:\VSCode Projects\Shelfbook-Platform
 
 # 2. Install everything
 npm install
@@ -408,7 +408,7 @@ You had 5 chaotic text documents. I've transformed them into:
 - Ready-to-run application
 - Complete with documentation
 
-**This is not just code - it's a professional foundation** for your Personiq platform.
+**This is not just code - it's a professional foundation** for your Shelfbook platform.
 
 **The hardest part is done. Now go build something awesome!** 🚀
 

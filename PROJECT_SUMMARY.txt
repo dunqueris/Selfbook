@@ -1,6 +1,6 @@
 ```
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                    🎉 PERSONIQ PLATFORM COMPLETE 🎉                       ║
+║                    🎉 SHELFBOOK PLATFORM COMPLETE 🎉                       ║
 ║                    Your 5 Docs → Professional App                         ║
 ╚════════════════════════════════════════════════════════════════════════════╝
 
@@ -22,7 +22,7 @@ Your 5 Text Documents (Chaotic, Scattered):
 Professional Next.js Project (Organized by Language):
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                                                                           │
-│  PERSONIQ-PLATFORM/                                                      │
+│  SHELFBOOK-PLATFORM/                                                      │
 │  ├── 📁 FRONTEND                                    (11 files)          │
 │  │   ├── Pages: home, login, signup, dashboard, profile                │
 │  │   └── Components: Navbar, ProfileCard, Sections                     │
@@ -338,7 +338,7 @@ Everything you need is ready. The hardest part is done.
 
 
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                  GOOD LUCK BUILDING PERSONIQ! 🎉                          ║
+║                  GOOD LUCK BUILDING SHELFBOOK! 🎉                          ║
 ║                                                                            ║
 ║          Questions? → Check documentation files                            ║
 ║          Ready to go? → npm install && npm run dev                        ║

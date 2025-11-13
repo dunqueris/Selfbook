@@ -1,4 +1,4 @@
-# Personiq - Profile Platform MVP
+# Shelfbook - Profile Platform MVP
 
 A modern, full-featured personal profile platform built with **Next.js**, **TypeScript**, **Tailwind CSS**, and **Supabase**. Create beautiful profiles with customizable sections and share them with a unique URL!
 
@@ -33,7 +33,7 @@ A modern, full-featured personal profile platform built with **Next.js**, **Type
 
 ```bash
 # Create and navigate to project directory
-cd d:\VSCode Projects\Personiq-Platform
+cd d:\VSCode Projects\Shelfbook-Platform
 
 # Install dependencies
 npm install
@@ -132,7 +132,7 @@ Open http://localhost:3000 in your browser!
 ## 📝 Project Structure
 
 ```
-Personiq-Platform/
+Shelfbook-Platform/
 ├── app/
 │   ├── layout.tsx              # Root layout with Navbar
 │   ├── page.tsx                # Home page

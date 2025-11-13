@@ -289,7 +289,7 @@ JSON (.json):        2 files
 ## 📂 DIRECTORY STRUCTURE
 
 ```
-Personiq-Platform/
+Shelfbook-Platform/
 │
 ├── 📁 app/                          # Next.js app directory
 │   ├── 📁 api/                      # API routes
