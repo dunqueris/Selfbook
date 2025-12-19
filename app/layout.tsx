@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import Navbar from '@/components/Navbar'
 
 export const metadata: Metadata = {
-  title: 'Shelfbook',
+  title: 'Selfbook',
   description: 'Create and share your personal profile',
 }
 

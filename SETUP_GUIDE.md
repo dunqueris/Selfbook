@@ -79,7 +79,7 @@ Styling:
 Navigate to your project directory and run:
 
 ```bash
-cd d:\VSCode Projects\Shelfbook-Platform
+cd d:\VSCode Projects\Selfbook-Platform
 npm install
 ```
 

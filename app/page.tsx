@@ -6,7 +6,7 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-6 py-24">
         <div className="text-center mb-20">
           <h1 className="text-6xl font-serif mb-6 tracking-tight">
-            Shelfbook
+            Selfbook
           </h1>
           <p className="text-xl text-gray-400 mb-12 font-light">
             A space for your presence

@@ -41,7 +41,7 @@ export default function Navbar() {
     <nav className="bg-black border-b border-gray-800">
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
         <Link href="/" className="text-2xl font-serif text-white hover:text-gray-300 transition">
-          Shelfbook
+          Selfbook
         </Link>
 
         <div className="flex gap-4 items-center">
