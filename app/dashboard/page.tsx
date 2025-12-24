@@ -138,7 +138,7 @@ export default function DashboardPage() {
       console.log('Upload path:', filePath)
 
       const { error: uploadError, data } = await supabase.storage
-        .from('profiles')
+        .from('Profiles')
         .upload(filePath, file, { upsert: true })
 
       console.log('Upload response:', { error: uploadError, data })
@@ -157,6 +157,7 @@ export default function DashboardPage() {
       // @ts-ignore - Supabase type inference
       await supabase.from('profiles').update({ avatar_url: newUrl, updated_at: new Date().toISOString() }).eq('id', profile.id)
       console.log('Avatar URL saved to database')
+      loadProfile()
     } catch (error) {
       console.error('Avatar upload failed:', error)
       const errorMsg = error instanceof Error ? error.message : String(error)
@@ -199,6 +200,7 @@ export default function DashboardPage() {
       // @ts-ignore - Supabase type inference
       await supabase.from('profiles').update({ banner_url: newUrl, updated_at: new Date().toISOString() }).eq('id', profile.id)
       console.log('Banner URL saved to database')
+      loadProfile()
     } catch (error) {
       console.error('Banner upload failed:', error)
       const errorMsg = error instanceof Error ? error.message : String(error)
