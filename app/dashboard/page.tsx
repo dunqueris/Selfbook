@@ -157,7 +157,7 @@ export default function DashboardPage() {
       // @ts-ignore - Supabase type inference
       await supabase.from('profiles').update({ avatar_url: newUrl, updated_at: new Date().toISOString() }).eq('id', profile.id)
       console.log('Avatar URL saved to database')
-      loadProfile()
+      await loadProfile()
     } catch (error) {
       console.error('Avatar upload failed:', error)
       const errorMsg = error instanceof Error ? error.message : String(error)
@@ -200,7 +200,7 @@ export default function DashboardPage() {
       // @ts-ignore - Supabase type inference
       await supabase.from('profiles').update({ banner_url: newUrl, updated_at: new Date().toISOString() }).eq('id', profile.id)
       console.log('Banner URL saved to database')
-      loadProfile()
+      await loadProfile()
     } catch (error) {
       console.error('Banner upload failed:', error)
       const errorMsg = error instanceof Error ? error.message : String(error)
