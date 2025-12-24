@@ -17,6 +17,8 @@ export default function DashboardPage() {
   const [avatarUrl, setAvatarUrl] = useState('')
   const [bannerUrl, setBannerUrl] = useState('')
   const [showAddMenu, setShowAddMenu] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const [uploadingBanner, setUploadingBanner] = useState(false)
   const router = useRouter()
   const supabase = getSupabaseClient()
 
@@ -122,6 +124,54 @@ export default function DashboardPage() {
     }
   }
 
+  const uploadAvatar = async (file: File) => {
+    if (!profile) return
+    setUploadingAvatar(true)
+    
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${profile.id}-avatar.${fileExt}`
+      const filePath = `avatars/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('profiles')
+        .upload(filePath, file, { upsert: true })
+
+      if (uploadError) throw uploadError
+
+      const { data } = supabase.storage.from('profiles').getPublicUrl(filePath)
+      setAvatarUrl(data.publicUrl)
+    } catch (error) {
+      console.error('Avatar upload failed:', error)
+    } finally {
+      setUploadingAvatar(false)
+    }
+  }
+
+  const uploadBanner = async (file: File) => {
+    if (!profile) return
+    setUploadingBanner(true)
+    
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${profile.id}-banner.${fileExt}`
+      const filePath = `banners/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('profiles')
+        .upload(filePath, file, { upsert: true })
+
+      if (uploadError) throw uploadError
+
+      const { data } = supabase.storage.from('profiles').getPublicUrl(filePath)
+      setBannerUrl(data.publicUrl)
+    } catch (error) {
+      console.error('Banner upload failed:', error)
+    } finally {
+      setUploadingBanner(false)
+    }
+  }
+
   const addSection = async (type: 'text_list' | 'links' | 'gallery') => {
     if (!profile) return
 
@@ -210,33 +260,65 @@ export default function DashboardPage() {
             <div className="space-y-5 pt-6 border-t border-gray-800">
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Profile Picture URL
+                  Profile Picture
                 </label>
-                <input
-                  type="url"
-                  value={avatarUrl}
-                  onChange={(e) => setAvatarUrl(e.target.value)}
-                  className="w-full px-4 py-3 bg-black border border-gray-800 text-white focus:border-white focus:outline-none transition"
-                  placeholder="https://example.com/avatar.jpg"
-                />
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block text-xs text-gray-500 mb-2">Upload Image</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => e.target.files && uploadAvatar(e.target.files[0])}
+                      disabled={uploadingAvatar}
+                      className="w-full px-4 py-2 bg-black border border-gray-800 text-white text-sm"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-xs text-gray-500 mb-2">Or paste URL</label>
+                    <input
+                      type="url"
+                      value={avatarUrl}
+                      onChange={(e) => setAvatarUrl(e.target.value)}
+                      className="w-full px-4 py-2 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition"
+                      placeholder="https://example.com/avatar.jpg"
+                    />
+                  </div>
+                </div>
                 {avatarUrl && (
-                  <img src={avatarUrl} alt="Preview" className="mt-3 w-24 h-24 rounded object-cover" />
+                  <img src={avatarUrl} alt="Preview" className="mt-3 w-24 h-24 rounded-full object-cover" />
                 )}
+                {uploadingAvatar && <p className="text-xs text-gray-400 mt-2">Uploading...</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Banner URL
+                  Banner
                 </label>
-                <input
-                  type="url"
-                  value={bannerUrl}
-                  onChange={(e) => setBannerUrl(e.target.value)}
-                  className="w-full px-4 py-3 bg-black border border-gray-800 text-white focus:border-white focus:outline-none transition"
-                  placeholder="https://example.com/banner.jpg"
-                />
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block text-xs text-gray-500 mb-2">Upload Image</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => e.target.files && uploadBanner(e.target.files[0])}
+                      disabled={uploadingBanner}
+                      className="w-full px-4 py-2 bg-black border border-gray-800 text-white text-sm"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-xs text-gray-500 mb-2">Or paste URL</label>
+                    <input
+                      type="url"
+                      value={bannerUrl}
+                      onChange={(e) => setBannerUrl(e.target.value)}
+                      className="w-full px-4 py-2 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition"
+                      placeholder="https://example.com/banner.jpg"
+                    />
+                  </div>
+                </div>
                 {bannerUrl && (
                   <img src={bannerUrl} alt="Banner Preview" className="mt-3 w-full h-32 rounded object-cover" />
                 )}
+                {uploadingBanner && <p className="text-xs text-gray-400 mt-2">Uploading...</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">
