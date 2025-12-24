@@ -31,9 +31,9 @@ export default function ProfileCard({ profile, sections }: Props) {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto border-x border-gray-800">
         {/* Banner */}
-        <div className="relative h-56 w-full overflow-hidden border-b border-gray-800">
+        <div className="h-56 w-full overflow-hidden bg-gray-900">
           {profile.banner_url ? (
             <img
               src={profile.banner_url}
@@ -45,68 +45,64 @@ export default function ProfileCard({ profile, sections }: Props) {
           )}
         </div>
 
-        {/* Profile Container */}
-        <div className="border-x border-b border-gray-800">
-          {/* Profile Header - Avatar overlaps banner */}
-          <div className="px-8 pt-0 pb-8">
-            <div className="flex gap-6 -mt-16 mb-8">
-              {/* Avatar */}
-              <div className="flex-shrink-0">
-                <div className="w-40 h-40 bg-black rounded-full border-4 border-black flex items-center justify-center text-6xl overflow-hidden">
-                  {profile.avatar_url ? (
-                    <img
-                      src={profile.avatar_url}
-                      alt={profile.display_name || profile.username}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-gray-600">👤</span>
-                  )}
-                </div>
-              </div>
-
-              {/* Profile Info */}
-              <div className="flex-1 flex flex-col justify-end pb-2">
-                <h1 className="text-4xl font-serif mb-2">{profile.display_name}</h1>
-                <p className="text-gray-400 text-lg">@{profile.username}</p>
+        {/* Profile Header */}
+        <div className="px-8 py-8 border-b border-gray-800">
+          <div className="flex gap-6 items-start">
+            {/* Avatar */}
+            <div className="flex-shrink-0 -mt-24">
+              <div className="w-40 h-40 bg-black rounded-full border-4 border-black flex items-center justify-center text-6xl overflow-hidden">
+                {profile.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt={profile.display_name || profile.username}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-gray-600">👤</span>
+                )}
               </div>
             </div>
 
-            {/* Bio */}
-            {profile.bio && (
-              <p className="text-gray-300 text-base leading-relaxed max-w-2xl">{profile.bio}</p>
-            )}
-          </div>
-
-          {/* Sections Navigation */}
-          {sections.length > 0 && (
-            <>
-              <div className="border-t border-gray-800 px-8 py-4 flex gap-3 overflow-x-auto">
-                {sections.map((section) => (
-                  <button
-                    key={section.id}
-                    onClick={() => setActiveSection(section.id)}
-                    className={`px-5 py-2 font-medium transition whitespace-nowrap text-sm rounded-lg ${
-                      activeSection === section.id
-                        ? 'bg-white text-black'
-                        : 'border border-gray-800 text-gray-400 hover:border-gray-700 hover:text-white'
-                    }`}
-                  >
-                    {section.title}
-                  </button>
-                ))}
-              </div>
-
-              {/* Section Content */}
-              {activeContent && (
-                <div className="px-8 py-10 border-t border-gray-800">
-                  {renderSection(activeContent)}
-                </div>
+            {/* Profile Info */}
+            <div className="flex-1 pt-8">
+              <h1 className="text-4xl font-serif mb-1">{profile.display_name}</h1>
+              <p className="text-gray-400 text-lg mb-4">@{profile.username}</p>
+              {profile.bio && (
+                <p className="text-gray-300 text-base leading-relaxed">{profile.bio}</p>
               )}
-            </>
-          )}
+            </div>
+          </div>
+        </div>
 
-          {sections.length === 0 && (
+        {/* Sections Navigation */}
+        {sections.length > 0 && (
+          <>
+            <div className="border-b border-gray-800 px-8 py-4 flex gap-3 overflow-x-auto">
+              {sections.map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() => setActiveSection(section.id)}
+                  className={`px-5 py-2 font-medium transition whitespace-nowrap text-sm rounded-lg ${
+                    activeSection === section.id
+                      ? 'bg-white text-black'
+                      : 'border border-gray-800 text-gray-400 hover:border-gray-700 hover:text-white'
+                  }`}
+                >
+                  {section.title}
+                </button>
+              ))}
+            </div>
+
+            {/* Section Content */}
+            {activeContent && (
+              <div className="px-8 py-10">
+                {renderSection(activeContent)}
+              </div>
+            )}
+          </>
+        )}
+
+        {sections.length === 0 && (
             <div className="px-8 py-16 text-center text-gray-500 border-t border-gray-800">
               <p>No sections yet</p>
             </div>
