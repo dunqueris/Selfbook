@@ -19,6 +19,8 @@ export default function DashboardPage() {
   const [showAddMenu, setShowAddMenu] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const [uploadingBanner, setUploadingBanner] = useState(false)
+  const [sectionEdits, setSectionEdits] = useState<Record<string, { title: string; content: any; visible: boolean }>>({})
+  const [savingSectionId, setSavingSectionId] = useState<string | null>(null)
   const router = useRouter()
   const supabase = getSupabaseClient()
 
@@ -90,6 +92,22 @@ export default function DashboardPage() {
 
       if (sectionsData) {
         setSections(sectionsData)
+        const edits: Record<string, { title: string; content: any; visible: boolean }> = {}
+        sectionsData.forEach((s) => {
+          // Normalize defaults so editors don't crash
+          const normalizedContent =
+            s.type === 'text_list'
+              ? { items: s.content?.items || [] }
+              : s.type === 'links'
+              ? { links: s.content?.links || [] }
+              : { images: s.content?.images || [] }
+          edits[s.id] = {
+            title: s.title,
+            content: normalizedContent,
+            visible: s.visible ?? true,
+          }
+        })
+        setSectionEdits(edits)
       }
     }
 
@@ -235,6 +253,33 @@ export default function DashboardPage() {
     if (!error) {
       loadProfile()
     }
+  }
+
+  const updateSectionEdit = (id: string, updater: (prev: { title: string; content: any; visible: boolean }) => { title: string; content: any; visible: boolean }) => {
+    setSectionEdits((prev) => ({
+      ...prev,
+      [id]: updater(prev[id] || { title: '', content: {}, visible: true }),
+    }))
+  }
+
+  const saveSection = async (id: string) => {
+    const edits = sectionEdits[id]
+    if (!edits) return
+    setSavingSectionId(id)
+    const { error } = await supabase
+      .from('sections')
+      .update({
+        title: edits.title,
+        content: edits.content,
+        visible: edits.visible,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+
+    if (!error) {
+      await loadProfile()
+    }
+    setSavingSectionId(null)
   }
 
   const deleteSection = async (sectionId: string) => {
@@ -445,21 +490,236 @@ export default function DashboardPage() {
               {sections.map((section) => (
                 <div
                   key={section.id}
-                  className="flex items-center gap-4 p-4 border border-gray-800 hover:border-gray-700 transition"
+                  className="p-4 border border-gray-800 hover:border-gray-700 transition space-y-4"
                 >
-                  <GripVertical size={18} className="text-gray-600 cursor-move" />
-                  <div className="flex-1">
-                    <h4 className="font-medium text-white">{section.title}</h4>
-                    <p className="text-sm text-gray-500 capitalize">
-                      {section.type.replace('_', ' ')}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <GripVertical size={18} className="text-gray-600 cursor-move" />
+                    <div className="flex-1">
+                      <h4 className="font-medium text-white">{sectionEdits[section.id]?.title || section.title}</h4>
+                      <p className="text-sm text-gray-500 capitalize">
+                        {section.type.replace('_', ' ')}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => deleteSection(section.id)}
+                      className="p-2 text-gray-500 hover:text-red-400 transition"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </div>
-                  <button
-                    onClick={() => deleteSection(section.id)}
-                    className="p-2 text-gray-500 hover:text-red-400 transition"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs uppercase tracking-wide text-gray-500 mb-2">
+                          Title
+                        </label>
+                        <input
+                          type="text"
+                          value={sectionEdits[section.id]?.title || ''}
+                          onChange={(e) =>
+                            updateSectionEdit(section.id, (prev) => ({
+                              ...prev,
+                              title: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2 pt-6">
+                        <input
+                          id={`visible-${section.id}`}
+                          type="checkbox"
+                          checked={sectionEdits[section.id]?.visible ?? true}
+                          onChange={(e) =>
+                            updateSectionEdit(section.id, (prev) => ({
+                              ...prev,
+                              visible: e.target.checked,
+                            }))
+                          }
+                          className="h-4 w-4 text-black bg-black border-gray-700 rounded focus:ring-white"
+                        />
+                        <label htmlFor={`visible-${section.id}`} className="text-sm text-gray-300">
+                          Visible on profile
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Type-specific editors */}
+                    {section.type === 'text_list' && (
+                      <div>
+                        <label className="block text-xs uppercase tracking-wide text-gray-500 mb-2">
+                          Items (one per line)
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={(sectionEdits[section.id]?.content.items || []).join('\n')}
+                          onChange={(e) => {
+                            const items = e.target.value.split('\n').filter((line) => line.trim().length > 0)
+                            updateSectionEdit(section.id, (prev) => ({
+                              ...prev,
+                              content: { ...prev.content, items },
+                            }))
+                          }}
+                          className="w-full px-3 py-2 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none resize-none"
+                        />
+                      </div>
+                    )}
+
+                    {section.type === 'links' && (
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <label className="block text-xs uppercase tracking-wide text-gray-500">
+                            Links
+                          </label>
+                          <button
+                            onClick={() => {
+                              const links = sectionEdits[section.id]?.content.links || []
+                              updateSectionEdit(section.id, (prev) => ({
+                                ...prev,
+                                content: { ...prev.content, links: [...links, { title: 'New link', url: 'https://example.com' }] },
+                              }))
+                            }}
+                            className="text-xs px-3 py-1 border border-gray-700 text-gray-300 hover:border-white rounded"
+                          >
+                            Add link
+                          </button>
+                        </div>
+                        {(sectionEdits[section.id]?.content.links || []).map((link: any, idx: number) => (
+                          <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-2 border border-gray-800 p-3">
+                            <input
+                              type="text"
+                              value={link.title}
+                              onChange={(e) => {
+                                const links = [...(sectionEdits[section.id]?.content.links || [])]
+                                links[idx] = { ...links[idx], title: e.target.value }
+                                updateSectionEdit(section.id, (prev) => ({
+                                  ...prev,
+                                  content: { ...prev.content, links },
+                                }))
+                              }}
+                              className="w-full px-3 py-2 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none"
+                              placeholder="Title"
+                            />
+                            <div className="flex gap-2">
+                              <input
+                                type="url"
+                                value={link.url}
+                                onChange={(e) => {
+                                  const links = [...(sectionEdits[section.id]?.content.links || [])]
+                                  links[idx] = { ...links[idx], url: e.target.value }
+                                  updateSectionEdit(section.id, (prev) => ({
+                                    ...prev,
+                                    content: { ...prev.content, links },
+                                  }))
+                                }}
+                                className="w-full px-3 py-2 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none"
+                                placeholder="https://example.com"
+                              />
+                              <button
+                                onClick={() => {
+                                  const links = [...(sectionEdits[section.id]?.content.links || [])]
+                                  links.splice(idx, 1)
+                                  updateSectionEdit(section.id, (prev) => ({
+                                    ...prev,
+                                    content: { ...prev.content, links },
+                                  }))
+                                }}
+                                className="px-2 text-gray-500 hover:text-red-400"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {section.type === 'gallery' && (
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <label className="block text-xs uppercase tracking-wide text-gray-500">
+                            Images
+                          </label>
+                          <button
+                            onClick={() => {
+                              const images = sectionEdits[section.id]?.content.images || []
+                              updateSectionEdit(section.id, (prev) => ({
+                                ...prev,
+                                content: { ...prev.content, images: [...images, { url: 'https://placehold.co/600x400', caption: '' }] },
+                              }))
+                            }}
+                            className="text-xs px-3 py-1 border border-gray-700 text-gray-300 hover:border-white rounded"
+                          >
+                            Add image
+                          </button>
+                        </div>
+                        {(sectionEdits[section.id]?.content.images || []).map((image: any, idx: number) => (
+                          <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-2 border border-gray-800 p-3">
+                            <input
+                              type="url"
+                              value={image.url}
+                              onChange={(e) => {
+                                const images = [...(sectionEdits[section.id]?.content.images || [])]
+                                images[idx] = { ...images[idx], url: e.target.value }
+                                updateSectionEdit(section.id, (prev) => ({
+                                  ...prev,
+                                  content: { ...prev.content, images },
+                                }))
+                              }}
+                              className="w-full px-3 py-2 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none"
+                              placeholder="Image URL"
+                            />
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={image.caption || ''}
+                                onChange={(e) => {
+                                  const images = [...(sectionEdits[section.id]?.content.images || [])]
+                                  images[idx] = { ...images[idx], caption: e.target.value }
+                                  updateSectionEdit(section.id, (prev) => ({
+                                    ...prev,
+                                    content: { ...prev.content, images },
+                                  }))
+                                }}
+                                className="w-full px-3 py-2 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none"
+                                placeholder="Caption (optional)"
+                              />
+                              <button
+                                onClick={() => {
+                                  const images = [...(sectionEdits[section.id]?.content.images || [])]
+                                  images.splice(idx, 1)
+                                  updateSectionEdit(section.id, (prev) => ({
+                                    ...prev,
+                                    content: { ...prev.content, images },
+                                  }))
+                                }}
+                                className="px-2 text-gray-500 hover:text-red-400"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => saveSection(section.id)}
+                        disabled={savingSectionId === section.id}
+                        className="px-4 py-2 bg-white text-black text-sm rounded hover:bg-gray-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {savingSectionId === section.id ? 'Saving...' : 'Save changes'}
+                      </button>
+                      <button
+                        onClick={() => loadProfile()}
+                        className="px-4 py-2 border border-gray-700 text-gray-400 hover:border-gray-600 hover:text-white text-sm rounded"
+                      >
+                        Reset
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
