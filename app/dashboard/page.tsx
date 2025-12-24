@@ -146,7 +146,7 @@ export default function DashboardPage() {
       // Auto-save to database
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ avatar_url: newUrl, updated_at: new Date().toISOString() })
+        .update({ avatar_url: newUrl, updated_at: new Date().toISOString() } as any)
         .eq('id', profile.id)
 
       if (updateError) throw updateError
@@ -180,7 +180,7 @@ export default function DashboardPage() {
       // Auto-save to database
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ banner_url: newUrl, updated_at: new Date().toISOString() })
+        .update({ banner_url: newUrl, updated_at: new Date().toISOString() } as any)
         .eq('id', profile.id)
 
       if (updateError) throw updateError
@@ -294,7 +294,8 @@ export default function DashboardPage() {
                     type="url"
                     value={avatarUrl}
                     onChange={(e) => setAvatarUrl(e.target.value)}
-                    className="flex-1 px-4 py-3 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition rounded"
+                    disabled={uploadingAvatar}
+                    className="flex-1 px-4 py-3 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="Or paste URL"
                   />
                 </div>
@@ -319,7 +320,8 @@ export default function DashboardPage() {
                     type="url"
                     value={bannerUrl}
                     onChange={(e) => setBannerUrl(e.target.value)}
-                    className="flex-1 px-4 py-3 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition rounded"
+                    disabled={uploadingBanner}
+                    className="flex-1 px-4 py-3 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="Or paste URL"
                   />
                 </div>
