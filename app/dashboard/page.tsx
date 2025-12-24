@@ -144,6 +144,7 @@ export default function DashboardPage() {
       setAvatarUrl(newUrl)
 
       // Auto-save to database
+      // @ts-ignore - Supabase type inference
       await supabase
         .from('profiles')
         .update({ 
@@ -179,6 +180,7 @@ export default function DashboardPage() {
       setBannerUrl(newUrl)
 
       // Auto-save to database
+      // @ts-ignore - Supabase type inference
       await supabase
         .from('profiles')
         .update({ 
