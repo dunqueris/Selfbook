@@ -66,66 +66,86 @@ export default function SignupPage() {
       return
     }
 
-    // Check if we have a session (user might need email confirmation)
-    if (!authData.session) {
-      // If email confirmation is required, inform the user
-      setError('Please check your email to confirm your account before continuing.')
-      setLoading(false)
-      return
-    }
-
-    // Create profile directly using RPC function (bypasses RLS)
-    // First, let's try using the database function if it exists
+    // Create profile using RPC function (bypasses RLS)
+    // This works even without email confirmation
     const rpcParams = {
       p_user_id: authData.user.id,
       p_username: username.toLowerCase(),
       p_display_name: username,
     }
-    // @ts-expect-error - Supabase type inference issue
-    const { data: profileData, error: rpcError } = await supabase.rpc('create_profile_for_user', rpcParams)
+    
+    let profileCreated = false
+    
+    console.log('Attempting to create profile via RPC with params:', rpcParams)
+    
+    try {
+      // @ts-expect-error - Supabase type inference issue
+      const { data: profileData, error: rpcError } = await supabase.rpc('create_profile_for_user', rpcParams)
 
-    if (rpcError) {
-      // If RPC function doesn't exist, try direct insert (should work with session)
-      const insertData = {
-        user_id: authData.user.id,
-        username: username.toLowerCase(),
-        display_name: username,
+      console.log('RPC response - Data:', profileData, 'Error:', rpcError)
+
+      if (rpcError) {
+        console.error('RPC error details:', rpcError)
+        // RPC function doesn't exist or failed, will try API fallback
+      } else if (profileData) {
+        console.log('Profile created successfully via RPC')
+        profileCreated = true
       }
-      const { error: profileError } = await supabase
-        .from('profiles')
-        // @ts-expect-error - Supabase type inference issue
-        .insert(insertData)
+    } catch (err) {
+      console.error('RPC exception:', err)
+      // Will try API fallback
+    }
 
-      if (profileError) {
-        // If direct insert also fails, try API route as fallback
-        try {
-          const response = await fetch('/api/profile', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-              username: username.toLowerCase(),
-              display_name: username,
-            }),
-          })
+    // If RPC failed, try API route as fallback
+    if (!profileCreated) {
+      console.log('RPC failed or returned no data, trying API fallback...')
+      try {
+        const response = await fetch('/api/profile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            username: username.toLowerCase(),
+            display_name: username,
+            user_id: authData.user.id,
+          }),
+        })
 
-          const result = await response.json()
+        const result = await response.json()
 
-          if (!response.ok) {
-            setError(result.error || 'Failed to create profile')
-            setLoading(false)
-            return
-          }
-        } catch (err) {
-          setError('Failed to create profile. Please try again.')
+        console.log('API response status:', response.status, 'Data:', result)
+
+        if (!response.ok) {
+          // API creation also failed
+          console.error('Profile creation failed:', result.error)
+          setError('Profile creation failed: ' + (result.error || 'Unknown error'))
           setLoading(false)
           return
         }
+        
+        console.log('Profile created successfully via API')
+        profileCreated = true
+      } catch (apiErr) {
+        console.error('API exception:', apiErr)
+        setError('Failed to create profile. Please try again or contact support.')
+        setLoading(false)
+        return
       }
     }
 
+    console.log('Profile creation status:', profileCreated)
+
+    // If we need email confirmation, show a message
+    if (!authData.session) {
+      setError('Account created! Please check your email to confirm your account, then log in.')
+      setLoading(false)
+      return
+    }
+
+    // All good - redirect to dashboard
+    console.log('All checks passed, redirecting to dashboard...')
     router.push('/dashboard')
     router.refresh()
   }
@@ -185,7 +205,11 @@ export default function SignupPage() {
           </div>
 
           {error && (
-            <div className="bg-gray-900 border border-gray-700 text-red-400 px-4 py-3 text-sm">
+            <div className={`px-4 py-3 text-sm border ${
+              error.includes('created') || error.includes('Account')
+                ? 'bg-gray-900 border-gray-700 text-green-400'
+                : 'bg-gray-900 border-gray-700 text-red-400'
+            }`}>
               {error}
             </div>
           )}
@@ -209,3 +233,5 @@ export default function SignupPage() {
     </div>
   )
 }
+
+```

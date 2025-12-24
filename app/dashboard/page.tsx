@@ -29,11 +29,44 @@ export default function DashboardPage() {
       return
     }
 
-    const { data: profileData } = await supabase
+    const { data: profileData, error: profileError } = await supabase
       .from('profiles')
       .select('*')
       .eq('user_id', user.id)
       .single<Profile>()
+
+    if (profileError) {
+      console.error('Error loading profile:', profileError)
+      console.error('User ID:', user.id)
+      console.error('Error code:', profileError.code)
+      
+      // If profile doesn't exist, try to create it as a fallback
+      if (profileError.code === 'PGRST116') {
+        console.warn('Profile not found for user, attempting to create...')
+        try {
+          const response = await fetch('/api/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              username: `user_${user.id.slice(0, 8)}`,
+              display_name: user.email?.split('@')[0] || 'New User',
+            }),
+          })
+          
+          const result = await response.json()
+          if (response.ok && result) {
+            setProfile(result)
+            setDisplayName(result.display_name || '')
+            setBio(result.bio || '')
+          } else {
+            console.error('Failed to create profile:', result.error)
+          }
+        } catch (err) {
+          console.error('Exception creating profile:', err)
+        }
+      }
+    }
 
     if (profileData) {
       setProfile(profileData)
