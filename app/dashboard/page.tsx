@@ -91,9 +91,9 @@ export default function DashboardPage() {
         .order('position')
 
       if (sectionsData) {
-        setSections(sectionsData)
+        setSections(sectionsData as Section[])
         const edits: Record<string, { title: string; content: any; visible: boolean }> = {}
-        sectionsData.forEach((s) => {
+        ;(sectionsData as Section[]).forEach((s: Section) => {
           // Normalize defaults so editors don't crash
           const normalizedContent =
             s.type === 'text_list'
