@@ -148,7 +148,7 @@ export default function DashboardPage() {
         throw uploadError
       }
 
-      const { data: publicUrlData } = supabase.storage.from('profiles').getPublicUrl(filePath)
+      const { data: publicUrlData } = supabase.storage.from('Profiles').getPublicUrl(filePath)
       const newUrl = publicUrlData.publicUrl
       console.log('Generated public URL:', newUrl)
       setAvatarUrl(newUrl)
@@ -180,7 +180,7 @@ export default function DashboardPage() {
       console.log('Upload path:', filePath)
 
       const { error: uploadError, data } = await supabase.storage
-        .from('profiles')
+        .from('Profiles')
         .upload(filePath, file, { upsert: true })
 
       console.log('Upload response:', { error: uploadError, data })
@@ -190,7 +190,7 @@ export default function DashboardPage() {
         throw uploadError
       }
 
-      const { data: publicUrlData } = supabase.storage.from('profiles').getPublicUrl(filePath)
+      const { data: publicUrlData } = supabase.storage.from('Profiles').getPublicUrl(filePath)
       const newUrl = publicUrlData.publicUrl
       console.log('Generated public URL:', newUrl)
       setBannerUrl(newUrl)
