@@ -16,6 +16,7 @@ export default function DashboardPage() {
   const [bio, setBio] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
   const [bannerUrl, setBannerUrl] = useState('')
+  const [showAddMenu, setShowAddMenu] = useState(false)
   const router = useRouter()
   const supabase = getSupabaseClient()
 
@@ -282,31 +283,45 @@ export default function DashboardPage() {
         <div className="border border-gray-800 p-8">
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-2xl font-serif">Sections</h3>
-            <div className="relative group">
-              <button className="flex items-center gap-2 px-4 py-2 bg-white text-black hover:bg-gray-200 transition text-sm rounded-lg">
+            <div className="relative">
+              <button 
+                onClick={() => setShowAddMenu(!showAddMenu)}
+                className="flex items-center gap-2 px-4 py-2 bg-white text-black hover:bg-gray-200 transition text-sm rounded-lg"
+              >
                 <Plus size={16} />
                 Add Section
               </button>
-              <div className="absolute right-0 mt-2 w-48 bg-black border border-gray-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-10">
-                <button
-                  onClick={() => addSection('text_list')}
-                  className="w-full px-4 py-3 text-left text-white hover:bg-gray-900 border-b border-gray-800 first:border-t-0"
-                >
-                  Text List
-                </button>
-                <button
-                  onClick={() => addSection('links')}
-                  className="w-full px-4 py-3 text-left text-white hover:bg-gray-900 border-b border-gray-800"
-                >
-                  Links
-                </button>
-                <button
-                  onClick={() => addSection('gallery')}
-                  className="w-full px-4 py-3 text-left text-white hover:bg-gray-900"
-                >
-                  Gallery
-                </button>
-              </div>
+              {showAddMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-black border border-gray-800 z-10 rounded">
+                  <button
+                    onClick={() => {
+                      addSection('text_list')
+                      setShowAddMenu(false)
+                    }}
+                    className="w-full px-4 py-3 text-left text-white hover:bg-gray-900 border-b border-gray-800"
+                  >
+                    Text List
+                  </button>
+                  <button
+                    onClick={() => {
+                      addSection('links')
+                      setShowAddMenu(false)
+                    }}
+                    className="w-full px-4 py-3 text-left text-white hover:bg-gray-900 border-b border-gray-800"
+                  >
+                    Links
+                  </button>
+                  <button
+                    onClick={() => {
+                      addSection('gallery')
+                      setShowAddMenu(false)
+                    }}
+                    className="w-full px-4 py-3 text-left text-white hover:bg-gray-900"
+                  >
+                    Gallery
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
