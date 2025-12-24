@@ -30,10 +30,10 @@ export default function ProfileCard({ profile, sections }: Props) {
   const activeContent = sections.find((s) => s.id === activeSection)
 
   return (
-    <div className="min-h-screen bg-black text-white p-4">
+    <div className="min-h-screen bg-black text-white">
       <div className="max-w-4xl mx-auto">
         {/* Banner */}
-        <div className="relative bg-gray-900 h-48 border-b border-gray-800 overflow-hidden">
+        <div className="relative h-56 w-full overflow-hidden border-b border-gray-800">
           {profile.banner_url ? (
             <img
               src={profile.banner_url}
@@ -41,34 +41,40 @@ export default function ProfileCard({ profile, sections }: Props) {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-r from-gray-900 to-gray-800" />
+            <div className="w-full h-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900" />
           )}
         </div>
 
         {/* Profile Container */}
-        <div className="border border-gray-800 border-t-0 overflow-hidden">
-          {/* Profile Header */}
-          <div className="px-8 pb-8 -mt-24">
-            <div className="flex items-end gap-6 mb-6">
-              <div className="w-32 h-32 bg-black rounded-full border-4 border-black flex items-center justify-center text-5xl">
-                {profile.avatar_url ? (
-                  <img
-                    src={profile.avatar_url}
-                    alt={profile.display_name || profile.username}
-                    className="w-full h-full rounded-full object-cover"
-                  />
-                ) : (
-                  <span className="text-gray-600">👤</span>
-                )}
+        <div className="border-x border-b border-gray-800">
+          {/* Profile Header - Avatar overlaps banner */}
+          <div className="px-8 pt-0 pb-8">
+            <div className="flex gap-6 -mt-16 mb-8">
+              {/* Avatar */}
+              <div className="flex-shrink-0">
+                <div className="w-40 h-40 bg-black rounded-full border-4 border-black flex items-center justify-center text-6xl overflow-hidden">
+                  {profile.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.display_name || profile.username}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-600">👤</span>
+                  )}
+                </div>
               </div>
-              <div className="flex-1 mb-2">
+
+              {/* Profile Info */}
+              <div className="flex-1 flex flex-col justify-end pb-2">
                 <h1 className="text-4xl font-serif mb-2">{profile.display_name}</h1>
-                <p className="text-gray-400">@{profile.username}</p>
+                <p className="text-gray-400 text-lg">@{profile.username}</p>
               </div>
             </div>
 
+            {/* Bio */}
             {profile.bio && (
-              <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">{profile.bio}</p>
+              <p className="text-gray-300 text-base leading-relaxed max-w-2xl">{profile.bio}</p>
             )}
           </div>
 
