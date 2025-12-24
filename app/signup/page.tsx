@@ -79,6 +79,7 @@ export default function SignupPage() {
     console.log('Attempting to create profile via RPC with params:', rpcParams)
     
     try {
+      // @ts-expect-error - Supabase RPC types are generated at runtime
       const { data: profileData, error: rpcError } = await supabase.rpc('create_profile_for_user', rpcParams)
 
       console.log('RPC response - Data:', profileData, 'Error:', rpcError)
