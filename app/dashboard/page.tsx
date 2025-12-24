@@ -140,9 +140,19 @@ export default function DashboardPage() {
       if (uploadError) throw uploadError
 
       const { data } = supabase.storage.from('profiles').getPublicUrl(filePath)
-      setAvatarUrl(data.publicUrl)
+      const newUrl = data.publicUrl
+      setAvatarUrl(newUrl)
+
+      // Auto-save to database
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: newUrl, updated_at: new Date().toISOString() })
+        .eq('id', profile.id)
+
+      if (updateError) throw updateError
     } catch (error) {
       console.error('Avatar upload failed:', error)
+      alert('Failed to upload avatar. Make sure the storage bucket exists.')
     } finally {
       setUploadingAvatar(false)
     }
@@ -164,9 +174,19 @@ export default function DashboardPage() {
       if (uploadError) throw uploadError
 
       const { data } = supabase.storage.from('profiles').getPublicUrl(filePath)
-      setBannerUrl(data.publicUrl)
+      const newUrl = data.publicUrl
+      setBannerUrl(newUrl)
+
+      // Auto-save to database
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ banner_url: newUrl, updated_at: new Date().toISOString() })
+        .eq('id', profile.id)
+
+      if (updateError) throw updateError
     } catch (error) {
       console.error('Banner upload failed:', error)
+      alert('Failed to upload banner. Make sure the storage bucket exists.')
     } finally {
       setUploadingBanner(false)
     }
@@ -259,64 +279,52 @@ export default function DashboardPage() {
           {editingProfile && (
             <div className="space-y-5 pt-6 border-t border-gray-800">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-gray-400 mb-3">
                   Profile Picture
                 </label>
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <label className="block text-xs text-gray-500 mb-2">Upload Image</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => e.target.files && uploadAvatar(e.target.files[0])}
-                      disabled={uploadingAvatar}
-                      className="w-full px-4 py-2 bg-black border border-gray-800 text-white text-sm"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-xs text-gray-500 mb-2">Or paste URL</label>
-                    <input
-                      type="url"
-                      value={avatarUrl}
-                      onChange={(e) => setAvatarUrl(e.target.value)}
-                      className="w-full px-4 py-2 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition"
-                      placeholder="https://example.com/avatar.jpg"
-                    />
-                  </div>
+                <div className="flex gap-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => e.target.files && uploadAvatar(e.target.files[0])}
+                    disabled={uploadingAvatar}
+                    className="flex-1 px-4 py-3 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition rounded"
+                  />
+                  <input
+                    type="url"
+                    value={avatarUrl}
+                    onChange={(e) => setAvatarUrl(e.target.value)}
+                    className="flex-1 px-4 py-3 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition rounded"
+                    placeholder="Or paste URL"
+                  />
                 </div>
                 {avatarUrl && (
-                  <img src={avatarUrl} alt="Preview" className="mt-3 w-24 h-24 rounded-full object-cover" />
+                  <img src={avatarUrl} alt="Preview" className="mt-3 w-24 h-24 rounded-full object-cover border border-gray-800" />
                 )}
                 {uploadingAvatar && <p className="text-xs text-gray-400 mt-2">Uploading...</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-gray-400 mb-3">
                   Banner
                 </label>
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <label className="block text-xs text-gray-500 mb-2">Upload Image</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => e.target.files && uploadBanner(e.target.files[0])}
-                      disabled={uploadingBanner}
-                      className="w-full px-4 py-2 bg-black border border-gray-800 text-white text-sm"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-xs text-gray-500 mb-2">Or paste URL</label>
-                    <input
-                      type="url"
-                      value={bannerUrl}
-                      onChange={(e) => setBannerUrl(e.target.value)}
-                      className="w-full px-4 py-2 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition"
-                      placeholder="https://example.com/banner.jpg"
-                    />
-                  </div>
+                <div className="flex gap-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => e.target.files && uploadBanner(e.target.files[0])}
+                    disabled={uploadingBanner}
+                    className="flex-1 px-4 py-3 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition rounded"
+                  />
+                  <input
+                    type="url"
+                    value={bannerUrl}
+                    onChange={(e) => setBannerUrl(e.target.value)}
+                    className="flex-1 px-4 py-3 bg-black border border-gray-800 text-white text-sm focus:border-white focus:outline-none transition rounded"
+                    placeholder="Or paste URL"
+                  />
                 </div>
                 {bannerUrl && (
-                  <img src={bannerUrl} alt="Banner Preview" className="mt-3 w-full h-32 rounded object-cover" />
+                  <img src={bannerUrl} alt="Banner Preview" className="mt-3 w-full h-32 rounded object-cover border border-gray-800" />
                 )}
                 {uploadingBanner && <p className="text-xs text-gray-400 mt-2">Uploading...</p>}
               </div>
