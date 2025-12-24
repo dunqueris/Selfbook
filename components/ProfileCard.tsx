@@ -33,7 +33,17 @@ export default function ProfileCard({ profile, sections }: Props) {
     <div className="min-h-screen bg-black text-white p-4">
       <div className="max-w-4xl mx-auto">
         {/* Banner */}
-        <div className="bg-gray-900 h-48 border-b border-gray-800" />
+        <div className="relative bg-gray-900 h-48 border-b border-gray-800 overflow-hidden">
+          {profile.banner_url ? (
+            <img
+              src={profile.banner_url}
+              alt="Banner"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-r from-gray-900 to-gray-800" />
+          )}
+        </div>
 
         {/* Profile Container */}
         <div className="border border-gray-800 border-t-0 overflow-hidden">
