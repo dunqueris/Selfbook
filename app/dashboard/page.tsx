@@ -133,22 +133,34 @@ export default function DashboardPage() {
       const fileName = `${profile.id}-avatar.${fileExt}`
       const filePath = `avatars/${fileName}`
 
-      const { error: uploadError } = await supabase.storage
+      console.log('Starting avatar upload...')
+      console.log('File:', file.name, 'Size:', file.size, 'Type:', file.type)
+      console.log('Upload path:', filePath)
+
+      const { error: uploadError, data } = await supabase.storage
         .from('profiles')
         .upload(filePath, file, { upsert: true })
 
-      if (uploadError) throw uploadError
+      console.log('Upload response:', { error: uploadError, data })
 
-      const { data } = supabase.storage.from('profiles').getPublicUrl(filePath)
-      const newUrl = data.publicUrl
+      if (uploadError) {
+        console.error('Upload error details:', uploadError)
+        throw uploadError
+      }
+
+      const { data: publicUrlData } = supabase.storage.from('profiles').getPublicUrl(filePath)
+      const newUrl = publicUrlData.publicUrl
+      console.log('Generated public URL:', newUrl)
       setAvatarUrl(newUrl)
 
       // Auto-save to database
       // @ts-ignore - Supabase type inference
       await supabase.from('profiles').update({ avatar_url: newUrl, updated_at: new Date().toISOString() }).eq('id', profile.id)
+      console.log('Avatar URL saved to database')
     } catch (error) {
       console.error('Avatar upload failed:', error)
-      alert('Failed to upload avatar. Make sure the storage bucket exists.')
+      const errorMsg = error instanceof Error ? error.message : String(error)
+      alert(`Failed to upload avatar: ${errorMsg}`)
     } finally {
       setUploadingAvatar(false)
     }
@@ -163,22 +175,34 @@ export default function DashboardPage() {
       const fileName = `${profile.id}-banner.${fileExt}`
       const filePath = `banners/${fileName}`
 
-      const { error: uploadError } = await supabase.storage
+      console.log('Starting banner upload...')
+      console.log('File:', file.name, 'Size:', file.size, 'Type:', file.type)
+      console.log('Upload path:', filePath)
+
+      const { error: uploadError, data } = await supabase.storage
         .from('profiles')
         .upload(filePath, file, { upsert: true })
 
-      if (uploadError) throw uploadError
+      console.log('Upload response:', { error: uploadError, data })
 
-      const { data } = supabase.storage.from('profiles').getPublicUrl(filePath)
-      const newUrl = data.publicUrl
+      if (uploadError) {
+        console.error('Upload error details:', uploadError)
+        throw uploadError
+      }
+
+      const { data: publicUrlData } = supabase.storage.from('profiles').getPublicUrl(filePath)
+      const newUrl = publicUrlData.publicUrl
+      console.log('Generated public URL:', newUrl)
       setBannerUrl(newUrl)
 
       // Auto-save to database
       // @ts-ignore - Supabase type inference
       await supabase.from('profiles').update({ banner_url: newUrl, updated_at: new Date().toISOString() }).eq('id', profile.id)
+      console.log('Banner URL saved to database')
     } catch (error) {
       console.error('Banner upload failed:', error)
-      alert('Failed to upload banner. Make sure the storage bucket exists.')
+      const errorMsg = error instanceof Error ? error.message : String(error)
+      alert(`Failed to upload banner: ${errorMsg}`)
     } finally {
       setUploadingBanner(false)
     }
