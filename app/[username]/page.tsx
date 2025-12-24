@@ -3,6 +3,9 @@ import { Profile, Section } from '@/lib/types'
 import ProfileCard from '@/components/ProfileCard'
 import { notFound } from 'next/navigation'
 
+// Always serve fresh profile data; disable Next.js caching for this page
+export const revalidate = 0
+
 interface PageProps {
   params: {
     username: string
