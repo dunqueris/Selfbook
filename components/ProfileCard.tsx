@@ -103,11 +103,10 @@ export default function ProfileCard({ profile, sections }: Props) {
         )}
 
         {sections.length === 0 && (
-            <div className="px-8 py-16 text-center text-gray-500 border-t border-gray-800">
-              <p>No sections yet</p>
-            </div>
-          )}
-        </div>
+          <div className="px-8 py-16 text-center text-gray-500 border-t border-gray-800">
+            <p>No sections yet</p>
+          </div>
+        )}
       </div>
     </div>
   )
