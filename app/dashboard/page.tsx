@@ -14,6 +14,8 @@ export default function DashboardPage() {
   const [editingProfile, setEditingProfile] = useState(false)
   const [displayName, setDisplayName] = useState('')
   const [bio, setBio] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState('')
+  const [bannerUrl, setBannerUrl] = useState('')
   const router = useRouter()
   const supabase = getSupabaseClient()
 
@@ -72,6 +74,8 @@ export default function DashboardPage() {
       setProfile(profileData)
       setDisplayName(profileData.display_name || '')
       setBio(profileData.bio || '')
+      setAvatarUrl(profileData.avatar_url || '')
+      setBannerUrl(profileData.banner_url || '')
 
       const profileId: string = profileData.id
 
@@ -100,6 +104,8 @@ export default function DashboardPage() {
     const updateData = {
       display_name: displayName,
       bio: bio,
+      avatar_url: avatarUrl,
+      banner_url: bannerUrl,
       updated_at: new Date().toISOString(),
     }
 
@@ -201,6 +207,36 @@ export default function DashboardPage() {
 
           {editingProfile && (
             <div className="space-y-5 pt-6 border-t border-gray-800">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">
+                  Profile Picture URL
+                </label>
+                <input
+                  type="url"
+                  value={avatarUrl}
+                  onChange={(e) => setAvatarUrl(e.target.value)}
+                  className="w-full px-4 py-3 bg-black border border-gray-800 text-white focus:border-white focus:outline-none transition"
+                  placeholder="https://example.com/avatar.jpg"
+                />
+                {avatarUrl && (
+                  <img src={avatarUrl} alt="Preview" className="mt-3 w-24 h-24 rounded object-cover" />
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">
+                  Banner URL
+                </label>
+                <input
+                  type="url"
+                  value={bannerUrl}
+                  onChange={(e) => setBannerUrl(e.target.value)}
+                  className="w-full px-4 py-3 bg-black border border-gray-800 text-white focus:border-white focus:outline-none transition"
+                  placeholder="https://example.com/banner.jpg"
+                />
+                {bannerUrl && (
+                  <img src={bannerUrl} alt="Banner Preview" className="mt-3 w-full h-32 rounded object-cover" />
+                )}
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">
                   Display Name
