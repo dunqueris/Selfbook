@@ -66,7 +66,6 @@ export async function POST(request: Request) {
 
   // Try to create profile using RPC function first (bypasses RLS)
   try {
-    // @ts-expect-error - Supabase RPC types are generated at runtime
     const { data: profileData, error: rpcError } = await supabase.rpc('create_profile_for_user', {
       p_user_id: currentUserId,
       p_username: username.toLowerCase(),
