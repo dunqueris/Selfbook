@@ -144,12 +144,13 @@ export default function DashboardPage() {
       setAvatarUrl(newUrl)
 
       // Auto-save to database
-      const { error: updateError } = await supabase
+      await supabase
         .from('profiles')
-        .update({ avatar_url: newUrl, updated_at: new Date().toISOString() } as any)
+        .update({ 
+          avatar_url: newUrl, 
+          updated_at: new Date().toISOString(),
+        })
         .eq('id', profile.id)
-
-      if (updateError) throw updateError
     } catch (error) {
       console.error('Avatar upload failed:', error)
       alert('Failed to upload avatar. Make sure the storage bucket exists.')
@@ -178,12 +179,13 @@ export default function DashboardPage() {
       setBannerUrl(newUrl)
 
       // Auto-save to database
-      const { error: updateError } = await supabase
+      await supabase
         .from('profiles')
-        .update({ banner_url: newUrl, updated_at: new Date().toISOString() } as any)
+        .update({ 
+          banner_url: newUrl, 
+          updated_at: new Date().toISOString(),
+        })
         .eq('id', profile.id)
-
-      if (updateError) throw updateError
     } catch (error) {
       console.error('Banner upload failed:', error)
       alert('Failed to upload banner. Make sure the storage bucket exists.')
